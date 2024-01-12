@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Simulated Racing</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .menu {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: #333;
+            margin: 0 20px;
+            font-size: 24px;
+            padding: 10px 20px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .menu a:hover {
+            background-color: #333;
+            color: #fff;
+        }
+
+        #vehicle-container {
+            width: 100%;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 50px;
+        }
+
+        canvas {
+            background: transparent; /* Set background to be transparent */
+            display: block; /* Make the canvas a block element */
+            margin: auto; /* Center the canvas */
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Simulated Racing</h1>
+
+    <div class="menu">
+        <a href="race.html">Race</a>
+        <a href="qualifying.html">Qualifying</a>
+    </div>
+
+    <div id="vehicle-container">
+        <canvas id="bg"></canvas>   
+    </div>
+
+    <script type="module" src="./js/carAnimation.js"></script>
+</body>
+</html>

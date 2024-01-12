@@ -1,0 +1,1 @@
+{"mappings":";AAEA","sources":["src/style.css"],"sourcesContent":["@import url(\"https://use.typekit.net/jmk3xov.css\");\n\ncanvas {\n  position: fixed;\n  top: 0;\n  left: 0;\n}\n\n"],"names":[],"version":3,"file":"index.2cdaf7bc.css.map","sourceRoot":"/__parcel_source_root/"}
