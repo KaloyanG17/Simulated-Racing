@@ -221,6 +221,7 @@ function createYukaCar({ maxSpeed, minSpeed, team, startPos }) {
   vehicle.minSpeed = minSpeed;
   vehicle.boundingRadius = 0.8;
   vehicle.constructor = team;
+  vehicle.smoother = new YUKA.Smoother(5);
 
 
   // Add a property to keep track of the start time of the current lap
@@ -232,9 +233,9 @@ function createYukaCar({ maxSpeed, minSpeed, team, startPos }) {
   vehicle.path = path;
 
   // THINGS TO CHANGE
-  // vehicle.mass = 1.1; 
+  // vehicle.mass = 3; 
   // vehicle.maxTurnRate = 1; ???
-  // vehicle.maxForce = 100; How much car can turn and accelerate 
+  // vehicle.maxForce = 20;// How much car can turn and accelerate 
 
 
   // Set vehicle start position (if odd start on left, if even start on right)
