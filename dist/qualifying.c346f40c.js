@@ -600,7 +600,7 @@ directionalLight.position.set(0, 1, 0);
 scene.add(directionalLight);
 // Load the GLTF model
 const loader = new (0, _gltfloader.GLTFLoader)();
-loader.load("./assets/track.glb", function(gltf) {
+loader.load("./assets/track1.glb", function(gltf) {
     const model = gltf.scene;
     scene.add(model);
 });

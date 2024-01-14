@@ -33,7 +33,7 @@ scene.add(directionalLight);
 
 // Load the GLTF model
 const loader = new GLTFLoader();
-loader.load('./assets/track.glb', function (gltf) {
+loader.load('./assets/track1.glb', function (gltf) {
   const model = gltf.scene;
   scene.add(model);
 });
@@ -41,34 +41,34 @@ loader.load('./assets/track.glb', function (gltf) {
 // Vehicle setup
 const entityManager = new YUKA.EntityManager();
 
-const vehicle1 = createYukaCar({ maxSpeed: 19, minSpeed: 10, team: 'red', startPos: 1 });
+const vehicle1 = createYukaCar({ maxSpeed: 19, minSpeed: 10, team: 'red', startPos: 1, model: 'carLow.glb' });
 entityManager.add(vehicle1);
 
-const vehicle2 = createYukaCar({ maxSpeed: 19, minSpeed: 10, team: 'blue', startPos: 2 });
+const vehicle2 = createYukaCar({ maxSpeed: 19, minSpeed: 10, team: 'blue', startPos: 2, model: 'carLow.glb' });
 entityManager.add(vehicle2);
 
-const vehicle3 = createYukaCar({ maxSpeed: 19, minSpeed: 10, team: 'red', startPos: 3 });
+const vehicle3 = createYukaCar({ maxSpeed: 19, minSpeed: 10, team: 'red', startPos: 3, model: 'car.glb' });
 entityManager.add(vehicle3);
 
-const vehicle4 = createYukaCar({ maxSpeed: 20, minSpeed: 10, team: 'white', startPos: 4 });
+const vehicle4 = createYukaCar({ maxSpeed: 20, minSpeed: 10, team: 'white', startPos: 4, model: 'car.glb' });
 entityManager.add(vehicle4);
 
-const vehicle5 = createYukaCar({ maxSpeed: 20, minSpeed: 10, team: 'black', startPos: 5 });
+const vehicle5 = createYukaCar({ maxSpeed: 20, minSpeed: 10, team: 'black', startPos: 5, model: 'carMerc.glb' });
 entityManager.add(vehicle5);
 
-const vehicle6 = createYukaCar({ maxSpeed: 20, minSpeed: 10, team: 'blue', startPos: 6 });
+const vehicle6 = createYukaCar({ maxSpeed: 20, minSpeed: 10, team: 'blue', startPos: 6, model: 'carMerc.glb' });
 entityManager.add(vehicle6);
 
-const vehicle7 = createYukaCar({ maxSpeed: 20, minSpeed: 10, team: 'white', startPos: 7 });
+const vehicle7 = createYukaCar({ maxSpeed: 20, minSpeed: 10, team: 'white', startPos: 7, model: 'carAudi.glb' });
 entityManager.add(vehicle7);
 
-const vehicle8 = createYukaCar({ maxSpeed: 20, minSpeed: 10, team: 'black', startPos: 8 });
+const vehicle8 = createYukaCar({ maxSpeed: 20, minSpeed: 10, team: 'black', startPos: 8, model: 'carAudi.glb' });
 entityManager.add(vehicle8);
 
-const vehicle9 = createYukaCar({ maxSpeed: 20, minSpeed: 5, team: 'green', startPos: 9 });
+const vehicle9 = createYukaCar({ maxSpeed: 20, minSpeed: 5, team: 'green', startPos: 9, model: 'car.glb'});
 entityManager.add(vehicle9);
 
-const vehicle10 = createYukaCar({ maxSpeed: 20, minSpeed: 5, team: 'green', startPos: 10 });
+const vehicle10 = createYukaCar({ maxSpeed: 20, minSpeed: 5, team: 'green', startPos: 10, model: 'car.glb' });
 entityManager.add(vehicle10);
 
 const vehicles = [vehicle1, vehicle2, vehicle3, vehicle4, vehicle5, vehicle6, vehicle7, vehicle8, vehicle9, vehicle10]; // Add more vehicles if needed
@@ -186,7 +186,7 @@ function animate() {
 }
 
 
-function createYukaCar({ maxSpeed, minSpeed, team, startPos }) {
+function createYukaCar({ maxSpeed, minSpeed, team, startPos, model }) {
   // Setup track path
   const path = new YUKA.Path();
   path.add(new YUKA.Vector3(-118, 0, 50));
@@ -223,7 +223,7 @@ function createYukaCar({ maxSpeed, minSpeed, team, startPos }) {
   vehicle.constructor = team;
 
   // Add a smoother to the vehicle to smooth out the steering
-  vehicle.smoother = new YUKA.Smoother(5);
+  vehicle.smoother = new YUKA.Smoother(1);
 
   // THINGS TO CHANGE
   // vehicle.mass = 3; 
@@ -254,7 +254,8 @@ function createYukaCar({ maxSpeed, minSpeed, team, startPos }) {
 
   // Setup vehicle render component
   const loader1 = new GLTFLoader();
-  loader1.load('./assets/car.glb', function (glb) {
+
+  loader1.load(`./assets/${model}` ,function (glb) {
     const model = glb.scene;
     model.traverse(function (child) {
       if (child.isMesh) {
@@ -267,7 +268,7 @@ function createYukaCar({ maxSpeed, minSpeed, team, startPos }) {
     scene.add(model);
     model.matrixAutoUpdate = false;
     vehicle.rotateTo(path.current(), true);
-    vehicle.scale = new YUKA.Vector3(1, 1, 1);
+    vehicle.scale.set(0.8, 0.8, 0.8);
     vehicle.setRenderComponent(model, sync);
   });
 
