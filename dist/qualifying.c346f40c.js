@@ -579,6 +579,7 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 var _three = require("three");
 var _yuka = require("yuka");
 var _gltfloader = require("three/examples/jsm/loaders/GLTFLoader");
+var _orbitControls = require("three/examples/jsm/controls/OrbitControls");
 // Setup scene
 const renderer = new _three.WebGLRenderer({
     antialias: true
@@ -600,82 +601,88 @@ directionalLight.position.set(0, 1, 0);
 scene.add(directionalLight);
 // Load the GLTF model
 const loader = new (0, _gltfloader.GLTFLoader)();
-loader.load("./assets/track1.glb", function(gltf) {
+loader.load("./assets/track2.glb", function(gltf) {
     const model = gltf.scene;
     scene.add(model);
+    model.traverse(function(child) {
+        console.log(child.name);
+        if (child.name && child.name.startsWith("prop_cone")) child.visible = false;
+        if (child.name && child.name.startsWith("plastic_barrier")) child.visible = false;
+    });
 });
 // Vehicle setup
 const entityManager = new _yuka.EntityManager();
 const vehicle1 = createYukaCar({
-    maxSpeed: 19,
+    maxSpeed: 40,
     minSpeed: 10,
     team: "red",
     startPos: 1
 });
 entityManager.add(vehicle1);
 const vehicle2 = createYukaCar({
-    maxSpeed: 19,
+    maxSpeed: 39,
     minSpeed: 10,
     team: "blue",
     startPos: 2
 });
 entityManager.add(vehicle2);
 const vehicle3 = createYukaCar({
-    maxSpeed: 19,
+    maxSpeed: 39,
     minSpeed: 10,
     team: "red",
     startPos: 3
 });
 entityManager.add(vehicle3);
 const vehicle4 = createYukaCar({
-    maxSpeed: 20,
+    maxSpeed: 40,
     minSpeed: 10,
     team: "white",
     startPos: 4
 });
 entityManager.add(vehicle4);
 const vehicle5 = createYukaCar({
-    maxSpeed: 20,
+    maxSpeed: 40,
     minSpeed: 10,
     team: "black",
     startPos: 5
 });
 entityManager.add(vehicle5);
 const vehicle6 = createYukaCar({
-    maxSpeed: 20,
+    maxSpeed: 40,
     minSpeed: 10,
     team: "blue",
     startPos: 6
 });
 entityManager.add(vehicle6);
 const vehicle7 = createYukaCar({
-    maxSpeed: 20,
+    maxSpeed: 40,
     minSpeed: 10,
     team: "white",
     startPos: 7
 });
 entityManager.add(vehicle7);
 const vehicle8 = createYukaCar({
-    maxSpeed: 20.3,
+    maxSpeed: 40.3,
     minSpeed: 10,
     team: "black",
     startPos: 8
 });
 entityManager.add(vehicle8);
 const vehicle9 = createYukaCar({
-    maxSpeed: 20.2,
+    maxSpeed: 40.2,
     minSpeed: 5,
     team: "green",
     startPos: 9
 });
 entityManager.add(vehicle9);
 const vehicle10 = createYukaCar({
-    maxSpeed: 20.5,
+    maxSpeed: 40.5,
     minSpeed: 5,
     team: "green",
     startPos: 10
 });
 entityManager.add(vehicle10);
+// const vehicles = [vehicle1]
 const vehicles = [
     vehicle1,
     vehicle2,
@@ -687,7 +694,7 @@ const vehicles = [
     vehicle8,
     vehicle9,
     vehicle10
-]; // Add more vehicles if needed
+]; // Add more vehicles if needed // Add more vehicles if needed
 const time = new _yuka.Time();
 // Sync the YUKA vehicle with the Three.js model
 function sync(entity, renderComponent) {
@@ -761,29 +768,46 @@ function animate() {
 function createYukaCar({ maxSpeed, minSpeed, team, startPos }) {
     // Setup track path
     const path = new _yuka.Path();
-    path.add(new _yuka.Vector3(-118, 0, 50));
-    path.add(new _yuka.Vector3(-80, 0, 42));
-    path.add(new _yuka.Vector3(-65, 0, 35));
-    path.add(new _yuka.Vector3(5, 0, 32));
-    path.add(new _yuka.Vector3(18, 0, 20));
-    path.add(new _yuka.Vector3(22, 0, -50));
-    path.add(new _yuka.Vector3(10, 0, -65));
-    path.add(new _yuka.Vector3(-14, 0, -85));
-    path.add(new _yuka.Vector3(-18, 0, -95));
-    path.add(new _yuka.Vector3(-18, 0, -220));
-    path.add(new _yuka.Vector3(-5, 0, -235));
-    path.add(new _yuka.Vector3(125, 0, -235));
-    path.add(new _yuka.Vector3(137, 0, -225));
-    path.add(new _yuka.Vector3(140, 0, -150));
-    path.add(new _yuka.Vector3(130, 0, -135));
-    path.add(new _yuka.Vector3(55, 0, -130));
-    path.add(new _yuka.Vector3(45, 0, -120));
-    path.add(new _yuka.Vector3(40, 0, 120));
-    path.add(new _yuka.Vector3(25, 0, 145));
-    path.add(new _yuka.Vector3(-90, 0, 150));
-    path.add(new _yuka.Vector3(-110, 0, 145));
-    path.add(new _yuka.Vector3(-120, 0, 135));
-    path.add(new _yuka.Vector3(-128, 0, 75));
+    path.add(new _yuka.Vector3(10, 0, -27));
+    path.add(new _yuka.Vector3(125, 0, -27));
+    path.add(new _yuka.Vector3(175, 1, -32));
+    path.add(new _yuka.Vector3(230, 2, -55));
+    path.add(new _yuka.Vector3(267, 2, -100));
+    path.add(new _yuka.Vector3(282, 3, -160));
+    path.add(new _yuka.Vector3(275, 3, -197));
+    path.add(new _yuka.Vector3(250, 3, -247));
+    path.add(new _yuka.Vector3(198, 2, -282));
+    path.add(new _yuka.Vector3(150, 1, -292));
+    path.add(new _yuka.Vector3(118, 0, -282));
+    path.add(new _yuka.Vector3(90, 1, -263));
+    path.add(new _yuka.Vector3(60, 0, -252));
+    path.add(new _yuka.Vector3(-120, 0, -252));
+    path.add(new _yuka.Vector3(-140, 0, -235));
+    path.add(new _yuka.Vector3(-140, 0, -185));
+    path.add(new _yuka.Vector3(-132, -2, -165));
+    path.add(new _yuka.Vector3(-103, -5, -140));
+    path.add(new _yuka.Vector3(-80, -4, -135));
+    path.add(new _yuka.Vector3(-65, -2, -145));
+    path.add(new _yuka.Vector3(-55, 1, -170));
+    path.add(new _yuka.Vector3(-45, 4, -195));
+    path.add(new _yuka.Vector3(-20, 4, -205));
+    path.add(new _yuka.Vector3(20, 4, -207));
+    path.add(new _yuka.Vector3(80, 2, -207));
+    path.add(new _yuka.Vector3(100, 1, -218));
+    path.add(new _yuka.Vector3(115, 1, -230));
+    path.add(new _yuka.Vector3(130, 0, -242));
+    path.add(new _yuka.Vector3(170, 1, -240));
+    path.add(new _yuka.Vector3(185, 0, -220));
+    path.add(new _yuka.Vector3(185, 1, -190));
+    path.add(new _yuka.Vector3(147, 1, -100));
+    path.add(new _yuka.Vector3(120, 1, -72));
+    path.add(new _yuka.Vector3(90, 1, -65));
+    path.add(new _yuka.Vector3(-15, 1, -97));
+    path.add(new _yuka.Vector3(-50, 1, -95));
+    path.add(new _yuka.Vector3(-70, 1, -85));
+    path.add(new _yuka.Vector3(-120, 0, -55));
+    path.add(new _yuka.Vector3(-135, 0, -40));
+    path.add(new _yuka.Vector3(-115, 0, -27));
     path.loop = true;
     // Setup vehicle
     const vehicle = new _yuka.Vehicle();
@@ -803,12 +827,23 @@ function createYukaCar({ maxSpeed, minSpeed, team, startPos }) {
     // vehicle.maxTurnRate = 1; ???
     // vehicle.maxForce = 100; How much car can turn and accelerate 
     // Set vehicle start position (if odd start on left, if even start on right)
-    vehicle.position.add(new _yuka.Vector3(-6, 0, startPos * 30));
+    if (startPos % 2 === 0) vehicle.position.add(new _yuka.Vector3(-startPos * 6, 0, 3));
+    else vehicle.position.add(new _yuka.Vector3(-startPos * 6, 0, -3));
     // Setup vehicle steering
     const followPathBehavior = new _yuka.FollowPathBehavior(path, 4);
     vehicle.steering.add(followPathBehavior);
     const onPathBehavior = new _yuka.OnPathBehavior(path); // can change radius and predictor factor dont know how they work yet 0.1 and 1 are default
     vehicle.steering.add(onPathBehavior);
+    // Create visual markers for each path point
+    const markerGeometry = new _three.SphereGeometry(0.5, 16, 16);
+    const markerMaterial = new _three.MeshBasicMaterial({
+        color: 0xff0000
+    });
+    for (const point of path._waypoints){
+        const marker = new _three.Mesh(markerGeometry, markerMaterial);
+        marker.position.copy(point);
+        scene.add(marker);
+    }
     // Setup vehicle render component
     const loader1 = new (0, _gltfloader.GLTFLoader)();
     loader1.load("./assets/car.glb", function(glb) {
@@ -843,6 +878,6 @@ window.addEventListener("resize", function() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-},{"three":"ktPTu","yuka":"ead4k","three/examples/jsm/loaders/GLTFLoader":"dVRsF"}]},["exmGs","bRYTm"], "bRYTm", "parcelRequire94c2")
+},{"three":"ktPTu","yuka":"ead4k","three/examples/jsm/loaders/GLTFLoader":"dVRsF","three/examples/jsm/controls/OrbitControls":"7mqRv"}]},["exmGs","bRYTm"], "bRYTm", "parcelRequire94c2")
 
 //# sourceMappingURL=qualifying.c346f40c.js.map

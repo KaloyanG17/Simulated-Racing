@@ -579,6 +579,11 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 var _three = require("three");
 var _yuka = require("yuka");
 var _gltfloader = require("three/examples/jsm/loaders/GLTFLoader");
+var _trackPathsJs = require("./trackPaths.js");
+// Global variables
+const TRACK = (0, _trackPathsJs.track2);
+const MODEL = "track2.glb";
+const CAR = "car.glb";
 // Setup scene
 const renderer = new _three.WebGLRenderer({
     antialias: true
@@ -600,90 +605,100 @@ directionalLight.position.set(0, 1, 0);
 scene.add(directionalLight);
 // Load the GLTF model
 const loader = new (0, _gltfloader.GLTFLoader)();
-loader.load("./assets/track1.glb", function(gltf) {
+loader.load(`./assets/${MODEL}`, function(gltf) {
     const model = gltf.scene;
     scene.add(model);
 });
 // Vehicle setup
 const entityManager = new _yuka.EntityManager();
 const vehicle1 = createYukaCar({
-    maxSpeed: 19,
+    maxSpeed: 29.1,
     minSpeed: 10,
     team: "red",
     startPos: 1,
-    model: "carLow.glb"
+    model: CAR,
+    track: TRACK
 });
 entityManager.add(vehicle1);
 const vehicle2 = createYukaCar({
-    maxSpeed: 19,
+    maxSpeed: 29.1,
     minSpeed: 10,
     team: "blue",
     startPos: 2,
-    model: "carLow.glb"
+    model: CAR,
+    track: TRACK
 });
 entityManager.add(vehicle2);
 const vehicle3 = createYukaCar({
-    maxSpeed: 19,
+    maxSpeed: 30.1,
     minSpeed: 10,
     team: "red",
     startPos: 3,
-    model: "car.glb"
+    model: CAR,
+    track: TRACK
 });
 entityManager.add(vehicle3);
 const vehicle4 = createYukaCar({
-    maxSpeed: 20,
+    maxSpeed: 30.5,
     minSpeed: 10,
     team: "white",
     startPos: 4,
-    model: "car.glb"
+    model: CAR,
+    track: TRACK
 });
 entityManager.add(vehicle4);
 const vehicle5 = createYukaCar({
-    maxSpeed: 20,
+    maxSpeed: 30.6,
     minSpeed: 10,
     team: "black",
     startPos: 5,
-    model: "carMerc.glb"
+    model: CAR,
+    track: TRACK
 });
 entityManager.add(vehicle5);
 const vehicle6 = createYukaCar({
-    maxSpeed: 20,
+    maxSpeed: 30.7,
     minSpeed: 10,
     team: "blue",
     startPos: 6,
-    model: "carMerc.glb"
+    model: CAR,
+    track: TRACK
 });
 entityManager.add(vehicle6);
 const vehicle7 = createYukaCar({
-    maxSpeed: 20,
+    maxSpeed: 30.5,
     minSpeed: 10,
     team: "white",
     startPos: 7,
-    model: "carAudi.glb"
+    model: CAR,
+    track: TRACK
 });
 entityManager.add(vehicle7);
 const vehicle8 = createYukaCar({
-    maxSpeed: 20,
+    maxSpeed: 31,
     minSpeed: 10,
     team: "black",
     startPos: 8,
-    model: "carAudi.glb"
+    model: CAR,
+    track: TRACK
 });
 entityManager.add(vehicle8);
 const vehicle9 = createYukaCar({
-    maxSpeed: 20,
+    maxSpeed: 31,
     minSpeed: 5,
     team: "green",
     startPos: 9,
-    model: "car.glb"
+    model: CAR,
+    track: TRACK
 });
 entityManager.add(vehicle9);
 const vehicle10 = createYukaCar({
-    maxSpeed: 20,
+    maxSpeed: 31.1,
     minSpeed: 5,
     team: "green",
     startPos: 10,
-    model: "car.glb"
+    model: CAR,
+    track: TRACK
 });
 entityManager.add(vehicle10);
 const vehicles = [
@@ -776,32 +791,10 @@ function animate() {
 `;
     renderer.render(scene, camera);
 }
-function createYukaCar({ maxSpeed, minSpeed, team, startPos, model }) {
+function createYukaCar({ maxSpeed, minSpeed, team, startPos, model, track }) {
     // Setup track path
     const path = new _yuka.Path();
-    path.add(new _yuka.Vector3(-118, 0, 50));
-    path.add(new _yuka.Vector3(-80, 0, 42));
-    path.add(new _yuka.Vector3(-65, 0, 35));
-    path.add(new _yuka.Vector3(5, 0, 32));
-    path.add(new _yuka.Vector3(18, 0, 20));
-    path.add(new _yuka.Vector3(22, 0, -50));
-    path.add(new _yuka.Vector3(10, 0, -65));
-    path.add(new _yuka.Vector3(-14, 0, -85));
-    path.add(new _yuka.Vector3(-18, 0, -95));
-    path.add(new _yuka.Vector3(-18, 0, -220));
-    path.add(new _yuka.Vector3(-5, 0, -235));
-    path.add(new _yuka.Vector3(125, 0, -235));
-    path.add(new _yuka.Vector3(137, 0, -225));
-    path.add(new _yuka.Vector3(140, 0, -150));
-    path.add(new _yuka.Vector3(130, 0, -135));
-    path.add(new _yuka.Vector3(55, 0, -130));
-    path.add(new _yuka.Vector3(45, 0, -120));
-    path.add(new _yuka.Vector3(40, 0, 120));
-    path.add(new _yuka.Vector3(25, 0, 145));
-    path.add(new _yuka.Vector3(-90, 0, 150));
-    path.add(new _yuka.Vector3(-110, 0, 145));
-    path.add(new _yuka.Vector3(-120, 0, 135));
-    path.add(new _yuka.Vector3(-128, 0, 75));
+    for (let point of track)path.add(new _yuka.Vector3(point.x, point.y, point.z));
     path.loop = true;
     // Setup vehicle
     const vehicle = new _yuka.Vehicle();
@@ -812,6 +805,8 @@ function createYukaCar({ maxSpeed, minSpeed, team, startPos, model }) {
     vehicle.constructor = team;
     // Add a smoother to the vehicle to smooth out the steering
     vehicle.smoother = new _yuka.Smoother(1);
+    // Store the path in the vehicle
+    vehicle.path = path;
     // THINGS TO CHANGE
     // vehicle.mass = 3; 
     // vehicle.maxTurnRate = 1; ???
@@ -820,11 +815,15 @@ function createYukaCar({ maxSpeed, minSpeed, team, startPos, model }) {
     vehicle.currentLapStartTime = Date.now();
     vehicle.lapNumber = 0;
     vehicle.bestLapTime = 0;
-    // Store the path in the vehicle
-    vehicle.path = path;
     // Set vehicle start position (if odd start on left, if even start on right)
-    if (startPos % 2 === 0) vehicle.position.add(new _yuka.Vector3(-6, 0, startPos * 6 + 10));
-    else vehicle.position.add(new _yuka.Vector3(-10, 0, startPos * 6 + 10));
+    // TRACK 1
+    //  if (startPos % 2 === 0) {
+    //     vehicle.position.add(new YUKA.Vector3(-6, 0, startPos*6 + 10));
+    // } else {  
+    //   vehicle.position.add(new YUKA.Vector3(-10, 0, startPos*6 + 10));
+    // }
+    if (startPos % 2 === 0) vehicle.position.add(new _yuka.Vector3(-startPos * 6, 0, 3));
+    else vehicle.position.add(new _yuka.Vector3(-startPos * 6, 0, -3));
     // Setup vehicle steering
     const followPathBehavior = new _yuka.FollowPathBehavior(path, 4);
     vehicle.steering.add(followPathBehavior);
@@ -864,6 +863,332 @@ window.addEventListener("resize", function() {
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-},{"three":"ktPTu","yuka":"ead4k","three/examples/jsm/loaders/GLTFLoader":"dVRsF"}]},["c9O06","kJv44"], "kJv44", "parcelRequire94c2")
+},{"three":"ktPTu","yuka":"ead4k","three/examples/jsm/loaders/GLTFLoader":"dVRsF","./trackPaths.js":"1y5l9"}],"1y5l9":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "track1", ()=>track1);
+parcelHelpers.export(exports, "track2", ()=>track2);
+var _yuka = require("yuka");
+const track1 = [
+    {
+        x: -118,
+        y: 0,
+        z: 50
+    },
+    {
+        x: -80,
+        y: 0,
+        z: 42
+    },
+    {
+        x: -65,
+        y: 0,
+        z: 35
+    },
+    {
+        x: 5,
+        y: 0,
+        z: 32
+    },
+    {
+        x: 18,
+        y: 0,
+        z: 20
+    },
+    {
+        x: 22,
+        y: 0,
+        z: -50
+    },
+    {
+        x: 10,
+        y: 0,
+        z: -65
+    },
+    {
+        x: -14,
+        y: 0,
+        z: -85
+    },
+    {
+        x: -18,
+        y: 0,
+        z: -95
+    },
+    {
+        x: -18,
+        y: 0,
+        z: -220
+    },
+    {
+        x: -5,
+        y: 0,
+        z: -235
+    },
+    {
+        x: 125,
+        y: 0,
+        z: -235
+    },
+    {
+        x: 137,
+        y: 0,
+        z: -225
+    },
+    {
+        x: 140,
+        y: 0,
+        z: -150
+    },
+    {
+        x: 130,
+        y: 0,
+        z: -135
+    },
+    {
+        x: 55,
+        y: 0,
+        z: -130
+    },
+    {
+        x: 45,
+        y: 0,
+        z: -120
+    },
+    {
+        x: 40,
+        y: 0,
+        z: 120
+    },
+    {
+        x: 25,
+        y: 0,
+        z: 145
+    },
+    {
+        x: -90,
+        y: 0,
+        z: 150
+    },
+    {
+        x: -110,
+        y: 0,
+        z: 145
+    },
+    {
+        x: -120,
+        y: 0,
+        z: 135
+    },
+    {
+        x: -128,
+        y: 0,
+        z: 75
+    }
+];
+const track2 = [
+    {
+        x: 10,
+        y: 0,
+        z: -27
+    },
+    {
+        x: 125,
+        y: 0,
+        z: -27
+    },
+    {
+        x: 175,
+        y: 1,
+        z: -32
+    },
+    {
+        x: 230,
+        y: 2,
+        z: -55
+    },
+    {
+        x: 267,
+        y: 2,
+        z: -100
+    },
+    {
+        x: 282,
+        y: 3,
+        z: -160
+    },
+    {
+        x: 275,
+        y: 3,
+        z: -197
+    },
+    {
+        x: 250,
+        y: 3,
+        z: -247
+    },
+    {
+        x: 198,
+        y: 2,
+        z: -282
+    },
+    {
+        x: 150,
+        y: 1,
+        z: -292
+    },
+    {
+        x: 118,
+        y: 0,
+        z: -282
+    },
+    {
+        x: 90,
+        y: 1,
+        z: -263
+    },
+    {
+        x: 60,
+        y: 0,
+        z: -252
+    },
+    {
+        x: -120,
+        y: 0,
+        z: -252
+    },
+    {
+        x: -140,
+        y: 0,
+        z: -235
+    },
+    {
+        x: -140,
+        y: 0,
+        z: -185
+    },
+    {
+        x: -132,
+        y: -2,
+        z: -165
+    },
+    {
+        x: -103,
+        y: -5,
+        z: -140
+    },
+    {
+        x: -80,
+        y: -4,
+        z: -135
+    },
+    {
+        x: -65,
+        y: -2,
+        z: -145
+    },
+    {
+        x: -55,
+        y: 1,
+        z: -170
+    },
+    {
+        x: -45,
+        y: 4,
+        z: -195
+    },
+    {
+        x: -20,
+        y: 4,
+        z: -205
+    },
+    {
+        x: 20,
+        y: 4,
+        z: -207
+    },
+    {
+        x: 80,
+        y: 2,
+        z: -207
+    },
+    {
+        x: 100,
+        y: 1,
+        z: -218
+    },
+    {
+        x: 115,
+        y: 1,
+        z: -230
+    },
+    {
+        x: 130,
+        y: 0,
+        z: -242
+    },
+    {
+        x: 170,
+        y: 1,
+        z: -240
+    },
+    {
+        x: 185,
+        y: 0,
+        z: -220
+    },
+    {
+        x: 185,
+        y: 1,
+        z: -190
+    },
+    {
+        x: 147,
+        y: 1,
+        z: -100
+    },
+    {
+        x: 120,
+        y: 1,
+        z: -72
+    },
+    {
+        x: 90,
+        y: 1,
+        z: -65
+    },
+    {
+        x: -15,
+        y: 1,
+        z: -97
+    },
+    {
+        x: -50,
+        y: 1,
+        z: -95
+    },
+    {
+        x: -70,
+        y: 1,
+        z: -85
+    },
+    {
+        x: -120,
+        y: 0,
+        z: -55
+    },
+    {
+        x: -135,
+        y: 0,
+        z: -40
+    },
+    {
+        x: -115,
+        y: 0,
+        z: -27
+    }
+];
+
+},{"yuka":"ead4k","@parcel/transformer-js/src/esmodule-helpers.js":"3eUf8"}]},["c9O06","kJv44"], "kJv44", "parcelRequire94c2")
 
 //# sourceMappingURL=race.22a0b19f.js.map

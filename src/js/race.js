@@ -2,6 +2,12 @@
 import * as THREE from 'three';
 import * as YUKA from 'yuka';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import {track1 , track2} from './trackPaths.js';
+
+// Global variables
+const TRACK = track2;
+const MODEL = 'track2.glb';
+const CAR = 'car.glb';
 
 // Setup scene
 const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -33,7 +39,7 @@ scene.add(directionalLight);
 
 // Load the GLTF model
 const loader = new GLTFLoader();
-loader.load('./assets/track1.glb', function (gltf) {
+loader.load(`./assets/${MODEL}`, function (gltf) {
   const model = gltf.scene;
   scene.add(model);
 });
@@ -41,34 +47,34 @@ loader.load('./assets/track1.glb', function (gltf) {
 // Vehicle setup
 const entityManager = new YUKA.EntityManager();
 
-const vehicle1 = createYukaCar({ maxSpeed: 19, minSpeed: 10, team: 'red', startPos: 1, model: 'carLow.glb' });
+const vehicle1 = createYukaCar({ maxSpeed: 29.1, minSpeed: 10, team: 'red', startPos: 1, model: CAR , track: TRACK});
 entityManager.add(vehicle1);
 
-const vehicle2 = createYukaCar({ maxSpeed: 19, minSpeed: 10, team: 'blue', startPos: 2, model: 'carLow.glb' });
+const vehicle2 = createYukaCar({ maxSpeed: 29.1, minSpeed: 10, team: 'blue', startPos: 2, model: CAR , track: TRACK});
 entityManager.add(vehicle2);
 
-const vehicle3 = createYukaCar({ maxSpeed: 19, minSpeed: 10, team: 'red', startPos: 3, model: 'car.glb' });
+const vehicle3 = createYukaCar({ maxSpeed: 30.1, minSpeed: 10, team: 'red', startPos: 3, model: CAR , track: TRACK});
 entityManager.add(vehicle3);
 
-const vehicle4 = createYukaCar({ maxSpeed: 20, minSpeed: 10, team: 'white', startPos: 4, model: 'car.glb' });
+const vehicle4 = createYukaCar({ maxSpeed: 30.5, minSpeed: 10, team: 'white', startPos: 4, model: CAR, track: TRACK });
 entityManager.add(vehicle4);
 
-const vehicle5 = createYukaCar({ maxSpeed: 20, minSpeed: 10, team: 'black', startPos: 5, model: 'carMerc.glb' });
+const vehicle5 = createYukaCar({ maxSpeed: 30.6, minSpeed: 10, team: 'black', startPos: 5, model: CAR, track: TRACK});
 entityManager.add(vehicle5);
 
-const vehicle6 = createYukaCar({ maxSpeed: 20, minSpeed: 10, team: 'blue', startPos: 6, model: 'carMerc.glb' });
+const vehicle6 = createYukaCar({ maxSpeed: 30.7, minSpeed: 10, team: 'blue', startPos: 6, model: CAR, track: TRACK});
 entityManager.add(vehicle6);
 
-const vehicle7 = createYukaCar({ maxSpeed: 20, minSpeed: 10, team: 'white', startPos: 7, model: 'carAudi.glb' });
+const vehicle7 = createYukaCar({ maxSpeed: 30.5, minSpeed: 10, team: 'white', startPos: 7, model: CAR , track: TRACK});
 entityManager.add(vehicle7);
 
-const vehicle8 = createYukaCar({ maxSpeed: 20, minSpeed: 10, team: 'black', startPos: 8, model: 'carAudi.glb' });
+const vehicle8 = createYukaCar({ maxSpeed: 31, minSpeed: 10, team: 'black', startPos: 8, model: CAR , track: TRACK});
 entityManager.add(vehicle8);
 
-const vehicle9 = createYukaCar({ maxSpeed: 20, minSpeed: 5, team: 'green', startPos: 9, model: 'car.glb'});
+const vehicle9 = createYukaCar({ maxSpeed: 31, minSpeed: 5, team: 'green', startPos: 9, model: CAR, track: TRACK});
 entityManager.add(vehicle9);
 
-const vehicle10 = createYukaCar({ maxSpeed: 20, minSpeed: 5, team: 'green', startPos: 10, model: 'car.glb' });
+const vehicle10 = createYukaCar({ maxSpeed: 31.1, minSpeed: 5, team: 'green', startPos: 10, model: CAR , track: TRACK});
 entityManager.add(vehicle10);
 
 const vehicles = [vehicle1, vehicle2, vehicle3, vehicle4, vehicle5, vehicle6, vehicle7, vehicle8, vehicle9, vehicle10]; // Add more vehicles if needed
@@ -186,34 +192,14 @@ function animate() {
 }
 
 
-function createYukaCar({ maxSpeed, minSpeed, team, startPos, model }) {
+function createYukaCar({ maxSpeed, minSpeed, team, startPos, model, track }) {
   // Setup track path
   const path = new YUKA.Path();
-  path.add(new YUKA.Vector3(-118, 0, 50));
-  path.add(new YUKA.Vector3(-80, 0, 42));
-  path.add(new YUKA.Vector3(-65, 0, 35));
-  path.add(new YUKA.Vector3(5, 0, 32));
-  path.add(new YUKA.Vector3(18, 0, 20));
-  path.add(new YUKA.Vector3(22, 0, -50));
-  path.add(new YUKA.Vector3(10, 0, -65));
-  path.add(new YUKA.Vector3(-14, 0, -85));
-  path.add(new YUKA.Vector3(-18, 0, -95));
-  path.add(new YUKA.Vector3(-18, 0, -220));
-  path.add(new YUKA.Vector3(-5, 0, -235));
-  path.add(new YUKA.Vector3(125, 0, -235));
-  path.add(new YUKA.Vector3(137, 0, -225));
-  path.add(new YUKA.Vector3(140, 0, -150));
-  path.add(new YUKA.Vector3(130, 0, -135));
-  path.add(new YUKA.Vector3(55, 0, -130));
-  path.add(new YUKA.Vector3(45, 0, -120));
-  path.add(new YUKA.Vector3(40, 0, 120));
-  path.add(new YUKA.Vector3(25, 0, 145));
-  path.add(new YUKA.Vector3(-90, 0, 150));
-  path.add(new YUKA.Vector3(-110, 0, 145));
-  path.add(new YUKA.Vector3(-120, 0, 135));
-  path.add(new YUKA.Vector3(-128, 0, 75));
+  for (let point of track) {
+    path.add(new YUKA.Vector3(point.x, point.y, point.z));
+  }
   path.loop = true;
-
+  
   // Setup vehicle
   const vehicle = new YUKA.Vehicle();
   vehicle.position.copy(path.current());
@@ -225,6 +211,9 @@ function createYukaCar({ maxSpeed, minSpeed, team, startPos, model }) {
   // Add a smoother to the vehicle to smooth out the steering
   vehicle.smoother = new YUKA.Smoother(1);
 
+  // Store the path in the vehicle
+  vehicle.path = path;
+
   // THINGS TO CHANGE
   // vehicle.mass = 3; 
   // vehicle.maxTurnRate = 1; ???
@@ -235,14 +224,19 @@ function createYukaCar({ maxSpeed, minSpeed, team, startPos, model }) {
   vehicle.lapNumber = 0;
   vehicle.bestLapTime = 0;
 
-  // Store the path in the vehicle
-  vehicle.path = path;
 
   // Set vehicle start position (if odd start on left, if even start on right)
+  // TRACK 1
+  //  if (startPos % 2 === 0) {
+  //     vehicle.position.add(new YUKA.Vector3(-6, 0, startPos*6 + 10));
+  // } else {  
+  //   vehicle.position.add(new YUKA.Vector3(-10, 0, startPos*6 + 10));
+  // }
+
   if (startPos % 2 === 0) {
-      vehicle.position.add(new YUKA.Vector3(-6, 0, startPos*6 + 10));
+    vehicle.position.add(new YUKA.Vector3(-startPos*6 , 0, 3));
   } else {  
-    vehicle.position.add(new YUKA.Vector3(-10, 0, startPos*6 + 10));
+    vehicle.position.add(new YUKA.Vector3(-startPos*6 , 0, -3));
   }
 
   // Setup vehicle steering

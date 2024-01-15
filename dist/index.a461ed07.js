@@ -579,6 +579,7 @@ var _three = require("three");
 var _gltfloader = require("three/examples/jsm/loaders/GLTFLoader");
 var _objloader = require("three/examples/jsm/loaders/OBJLoader");
 var _mtlloader = require("three/examples/jsm/loaders/MTLLoader");
+var _orbitControlsJs = require("three/examples/jsm/controls/OrbitControls.js");
 // Setup
 const scene = new _three.Scene();
 const renderer = new _three.WebGLRenderer({
@@ -589,7 +590,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 // set background as clear color
 scene.background = new _three.Color("darkGrey");
 const camera = new _three.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 3, 7); // Adjust the position to a higher point
+camera.position.set(0, 4, 7); // Adjust the position to a higher point
 camera.lookAt(scene.position);
 // Setup lights
 const ambientLight = new _three.AmbientLight("white", 1);
@@ -692,7 +693,7 @@ function animate() {
 }
 animate();
 
-},{"three":"ktPTu","three/examples/jsm/loaders/GLTFLoader":"dVRsF","three/examples/jsm/loaders/OBJLoader":"htIhD","three/examples/jsm/loaders/MTLLoader":"im57q"}],"htIhD":[function(require,module,exports) {
+},{"three":"ktPTu","three/examples/jsm/loaders/GLTFLoader":"dVRsF","three/examples/jsm/loaders/OBJLoader":"htIhD","three/examples/jsm/loaders/MTLLoader":"im57q","three/examples/jsm/controls/OrbitControls.js":"7mqRv"}],"htIhD":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "OBJLoader", ()=>OBJLoader);

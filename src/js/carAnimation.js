@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 
 // Setup
 const scene = new THREE.Scene();
@@ -21,7 +22,7 @@ const camera = new THREE.PerspectiveCamera(
   1000
 );
 
-camera.position.set(0, 3, 7); // Adjust the position to a higher point
+camera.position.set(0, 4, 7); // Adjust the position to a higher point
 camera.lookAt(scene.position);
 
 // Setup lights
@@ -142,6 +143,7 @@ function moveCamera() {
 document.body.onscroll = moveCamera;
 moveCamera();
 
+
 // Animation Loop
 function animate() {
   requestAnimationFrame(animate);
@@ -159,6 +161,7 @@ function animate() {
   if (carModel2 && carModel2.mixer) {
     carModel2.mixer.update(0.016); // Pass the time delta
   }
+
 
   renderer.render(scene, camera);
 }
