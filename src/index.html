@@ -6,56 +6,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Simulated Racing</title>
     <style>
-        body {
-            margin: 0;
-            font-family: 'Arial', sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            text-align: center;
-            padding: 20px;
-            overflow: hidden;
-        }
+    body {
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4;
+        color: #333;
+        text-align: center;
+        overflow: hidden;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
 
-        h1 {
-            color: #333;
-        }
+    h1 {
+        color: #fff;
+        font-size: 48px;
+        display: inline-block;
+        padding: 10px; /* Adjust the padding as needed */
+        border: 2px solid #fff;
+        border-radius: 8px;
+        background-color: #333;
+        margin: 20px 0; /* Add margin for spacing */
+    }
 
-        .menu {
-            display: flex;
-            justify-content: center;
-            margin-top: 40px;
-        }
+    .menu {
+        display: flex;
+        align-items: center; /* Center items horizontally */
+        justify-content: center; /* Center items vertically */
+        margin-top: 40px;
+    }
 
-        .menu a {
-            text-decoration: none;
-            color: #333;
-            margin: 0 20px;
-            font-size: 24px;
-            padding: 10px 20px;
-            border: 2px solid #333;
-            border-radius: 8px;
-            transition: background-color 0.3s, color 0.3s;
-        }
+    .menu a {
+        text-decoration: none;
+        background-color: #333;
+        color: #fff;
+        margin: 10px; /* Add some space between buttons */
+        font-size: 24px;
+        padding: 10px 20px;
+        border: 2px solid #fff;
+        border-radius: 8px;
+        transition: background-color 0.3s, color 0.3s;
+    }
 
-        .menu a:hover {
-            background-color: #333;
-            color: #fff;
-        }
+    .menu a:hover {
+        background-color: #fff;
+        color: #333;
+    }
 
-        #vehicle-container {
-            width: 100%;
-            height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 0px;
-        }
+    #vehicle-container {
+        display: flex;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+    }
 
-        canvas {
-            background: transparent; /* Set background to be transparent */
-            display: block; /* Make the canvas a block element */
-            margin: auto; /* Center the canvas */
-        }
+    .description {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        box-sizing: border-box;
+        color: #000;
+        font-size: 16px;
+    }
+
     </style>
 </head>
 <body>
@@ -70,6 +90,11 @@
         <canvas id="bg"></canvas>   
     </div>
 
-    <script type="module" src="./js/carAnimation.js"></script>
+    <div class="description">
+        <p>Simulated Racing is a website which aims to showcase the best Artificial Inteligence Stratagy possible in each instance of the race with AI controlled cars.</p>
+        <p>The cars will also be simulated to have a realistic behavious.</p>
+    </div>
+
+    <script type="module" src="./js/carAnimation1.js"></script>
 </body>
 </html>
