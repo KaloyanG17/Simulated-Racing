@@ -71,3 +71,10 @@ export const track2 = [
    { x: -135, y: 0, z: -40 },
    { x: -115, y: 0, z: -27 }
 ];
+
+export const track2Pit = [
+   { x: -90, y: 0, z: -15 },
+   { x: -70, y: 0, z: -12 },
+   { x: 70, y: 0, z: -12 },
+   { x: 100, y: 0, z: -18 }
+];

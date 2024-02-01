@@ -2,7 +2,8 @@
 import * as THREE from 'three';
 import * as YUKA from 'yuka';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
-import {track1 , track2} from './trackPaths.js';
+import {track1 , track2, track2Pit} from './trackPaths.js';
+import net from './network.js';
 
 // Global variables
 const TRACK = track2;
@@ -71,10 +72,10 @@ entityManager.add(vehicle7);
 const vehicle8 = createYukaCar({ maxSpeed: 31, minSpeed: 10, team: 'black', startPos: 8, model: CAR , track: TRACK});
 entityManager.add(vehicle8);
 
-const vehicle9 = createYukaCar({ maxSpeed: 31, minSpeed: 5, team: 'green', startPos: 9, model: CAR, track: TRACK});
+const vehicle9 = createYukaCar({ maxSpeed: 31, minSpeed: 10, team: 'green', startPos: 9, model: CAR, track: TRACK});
 entityManager.add(vehicle9);
 
-const vehicle10 = createYukaCar({ maxSpeed: 31.1, minSpeed: 5, team: 'green', startPos: 10, model: CAR , track: TRACK});
+const vehicle10 = createYukaCar({ maxSpeed: 31.1, minSpeed: 10, team: 'green', startPos: 10, model: CAR , track: TRACK});
 entityManager.add(vehicle10);
 
 const vehicles = [vehicle1, vehicle2, vehicle3, vehicle4, vehicle5, vehicle6, vehicle7, vehicle8, vehicle9, vehicle10]; // Add more vehicles if needed
@@ -145,6 +146,56 @@ function animate() {
     obstacleAvoidanceBehavior.brakingWeight = 0.2;
     vehicle.steering.add(obstacleAvoidanceBehavior);
 
+
+    // Pitstop logic
+
+    const threshold = 3;
+
+    // Check if the vehicle is in the pitstop
+    const startPosition = new YUKA.Vector3(track2Pit[0].x, track2Pit[0].y, track2Pit[0].z);
+    if (vehicle.position.distanceTo(startPosition) < threshold && !vehicle.inPit) {
+      vehicle.lapNumber++;
+      vehicle.maxSpeed = vehicle.minSpeed;
+      vehicle.inPit = true;
+      vehicle.outPit = false;
+    }
+
+    // Check if the vehicle is close to the ending point of the pitstop
+    const endPosition = new YUKA.Vector3(track2Pit[track2Pit.length - 1].x, track2Pit[track2Pit.length - 1].y, track2Pit[track2Pit.length - 1].z);
+    if (vehicle.position.distanceTo(endPosition) < threshold && !vehicle.outPit) {
+      vehicle.maxSpeed = vehicle.speedForPit;
+      vehicle.path = vehicle.originalPath;
+      vehicle.pitstop = false;
+      vehicle.path.loop = true;
+      vehicle.inPit = false;
+      vehicle.outPit = true;
+      console.log("Original Path Loop:", vehicle.originalPath.loop);
+      console.log("Original Path Waypoints:", vehicle.originalPath._waypoints);
+      console.log("Vehicle Position After Pitstop:", vehicle.position);
+      console.log("Vehicle Path Index After Pitstop:", vehicle.path._index);
+      console.log("Vehicle Path Waypoints After Pitstop:", vehicle.path);
+    }
+
+
+    const neuralNetworkInput = {
+      speed: vehicle.velocity.length().toFixed(0), // Adjust this based on your actual data
+      lapNumber: vehicle.lapNumber,
+    };
+
+    const decision = net.run(neuralNetworkInput);
+
+    if (decision.pitstop) {
+      // Perform pitstop actions for the current vehicle
+      if(!vehicle.pitstop) {
+        vehicle.path.loop = false;
+        for (let point of track2Pit) {
+          vehicle.path.add(new YUKA.Vector3(point.x, point.y, point.z));
+        }
+        console.log(vehicle.constructor, "is in pitstop")
+        vehicle.pitstop = true;
+      }
+    }
+
     // FORWARD FACING TO USE LATER FOR SLIPSTREAM
     // const forward = vehicle1.forward.clone().multiplyScalar(1)
 
@@ -174,20 +225,28 @@ function animate() {
 
   // Display race positions along with car information
   leaderboardElement.innerHTML = `
-  <h2>Race Time: ${raceTimer()} s</h2>
-  <ul>
-    ${sortedVehicles.map((vehicle, index) => `
-      <li>
-        Position ${index + 1} | 
-        Lap ${vehicle.lapNumber} <br>
-        ${(vehicle.velocity.length()).toFixed(0)} km/h | Constructer: ${(vehicle.constructor)} <br>
-        Best Lap: ${vehicle.bestLapTime.toFixed(2)} s
-      </li>
-      <hr>
-    `).join('')}
-  </ul>
+  <h2 style="font-size: 28px; color: white;">Race Time: ${raceTimer()} s</h2>
+  <div class="leaderboard-container" style="font-size: 20px;">
+    <div class="header">
+      <span class="position" style="color: white;">Pos</span>
+      <span class="lap">Lap</span>
+      <span class="speed">Speed</span>
+      <span class="constructor">Constructor</span>
+      <span class="best-lap">Best Lap</span>
+    </div>
+    <ul class="leaderboard" style="list-style-type: none; padding: 0;">
+      ${sortedVehicles.map((vehicle, index) => `
+        <li class="leaderboard-item" style="background-color: rgba(255, 255, 255, 0.1); margin: 5px 0; padding: 10px;">
+          <span class="position-circle" style="font-size: 24px; background-color: white; border-radius: 50%; padding: 5px; margin-right: 10px; color: black;">${index + 1}</span>
+          <span class="lap">${vehicle.lapNumber}</span>
+          <span class="speed">${(vehicle.velocity.length()).toFixed(0)} km/h</span>
+          <span class="constructor">${vehicle.constructor}</span>
+          <span class="best-lap">${vehicle.bestLapTime.toFixed(2)} s</span>
+        </li>
+      `).join('')}
+    </ul>
+  </div>
 `;
-
   renderer.render(scene, camera);
 }
 
@@ -204,15 +263,20 @@ function createYukaCar({ maxSpeed, minSpeed, team, startPos, model, track }) {
   const vehicle = new YUKA.Vehicle();
   vehicle.position.copy(path.current());
   vehicle.maxSpeed = maxSpeed;
+  vehicle.speedForPit = maxSpeed;
   vehicle.minSpeed = minSpeed;
   vehicle.boundingRadius = 0.8;
   vehicle.constructor = team;
+  vehicle.pitstop = false;
+  vehicle.inPit = false;
+  vehicle.outPit = true;
 
   // Add a smoother to the vehicle to smooth out the steering
   vehicle.smoother = new YUKA.Smoother(1);
 
   // Store the path in the vehicle
   vehicle.path = path;
+  vehicle.originalPath = path;
 
   // THINGS TO CHANGE
   // vehicle.mass = 3; 
@@ -223,15 +287,6 @@ function createYukaCar({ maxSpeed, minSpeed, team, startPos, model, track }) {
   vehicle.currentLapStartTime = Date.now();
   vehicle.lapNumber = 0;
   vehicle.bestLapTime = 0;
-
-
-  // Set vehicle start position (if odd start on left, if even start on right)
-  // TRACK 1
-  //  if (startPos % 2 === 0) {
-  //     vehicle.position.add(new YUKA.Vector3(-6, 0, startPos*6 + 10));
-  // } else {  
-  //   vehicle.position.add(new YUKA.Vector3(-10, 0, startPos*6 + 10));
-  // }
 
   if (startPos % 2 === 0) {
     vehicle.position.add(new YUKA.Vector3(-startPos*6 , 0, 3));
