@@ -148,13 +148,11 @@ function animate() {
 
 
     // Pitstop logic
-
     const threshold = 3;
 
     // Check if the vehicle is in the pitstop
     const startPosition = new YUKA.Vector3(track2Pit[0].x, track2Pit[0].y, track2Pit[0].z);
     if (vehicle.position.distanceTo(startPosition) < threshold && !vehicle.inPit) {
-      vehicle.lapNumber++;
       vehicle.maxSpeed = vehicle.minSpeed;
       vehicle.inPit = true;
       vehicle.outPit = false;
@@ -166,32 +164,29 @@ function animate() {
       vehicle.maxSpeed = vehicle.speedForPit;
       vehicle.path = vehicle.originalPath;
       vehicle.pitstop = false;
-      vehicle.path.loop = true;
       vehicle.inPit = false;
       vehicle.outPit = true;
-      console.log("Original Path Loop:", vehicle.originalPath.loop);
-      console.log("Original Path Waypoints:", vehicle.originalPath._waypoints);
-      console.log("Vehicle Position After Pitstop:", vehicle.position);
-      console.log("Vehicle Path Index After Pitstop:", vehicle.path._index);
-      console.log("Vehicle Path Waypoints After Pitstop:", vehicle.path);
+      vehicle.path._index = 1;
+      vehicle.lapNumber++;
     }
-
 
     const neuralNetworkInput = {
       speed: vehicle.velocity.length().toFixed(0), // Adjust this based on your actual data
       lapNumber: vehicle.lapNumber,
     };
 
-    const decision = net.run(neuralNetworkInput);
+    // const decision = net.run(neuralNetworkInput);
+    // Random decision for testing
+    const decision = {
+      pitstop: Math.random() > 0.5,
+    };
 
     if (decision.pitstop) {
       // Perform pitstop actions for the current vehicle
       if(!vehicle.pitstop) {
-        vehicle.path.loop = false;
         for (let point of track2Pit) {
           vehicle.path.add(new YUKA.Vector3(point.x, point.y, point.z));
         }
-        console.log(vehicle.constructor, "is in pitstop")
         vehicle.pitstop = true;
       }
     }
